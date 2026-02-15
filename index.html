@@ -13,7 +13,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background: linear-gradient(135deg, #11cbac, #2575fc);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
         }
@@ -85,6 +85,16 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
+        /* ===== BOTÓN NUEVA PARTIDA FLOTANTE ===== */
+        #newGameBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: auto;
+            padding: 15px 25px;
+            z-index: 1000;
+        }
+
         /* ===== RESULTADOS ===== */
         .result {
             font-size: 24px;
@@ -135,8 +145,10 @@
         <div id="result" class="result"></div>
     </div>
 
+    <!-- BOTÓN NUEVA PARTIDA FIJO -->
+    <button id="newGameBtn" onclick="restartGame()">🎮 Nueva partida</button>
+
     <script>
-        // --- FUNCIONES DE MEZCLA ---
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -145,261 +157,49 @@
             return array;
         }
 
-        // --- PREGUNTAS COMPLETAS ---
-        // Aquí incluyo todas tus preguntas originales + nuevas añadidas
         let questions = [
-            {
-                question: "El contrato indefinido ordinario puede celebrarse:",
-                answers: ["Solo por escrito", "Verbal o escrito", "Solo verbal"], correct: 1,
-                explanation: "El contrato indefinido ordinario puede celebrarse verbalmente o por escrito, sin requisitos especiales."
-            },
-
-            {
-                question: "El contrato fijo-discontinuo se usa cuando:",
-                answers: ["La actividad es permanente todo el año", "La actividad es intermitente", "Es una sustitución"], correct: 1,
-                explanation: "El contrato fijo-discontinuo es para trabajos intermitentes, como socorristas de verano o monitores de esquí."
-            },
-
-            {
-                question: "Un socorrista que trabaja todos los veranos tiene contrato:",
-                answers: ["Temporal imprevisible", "Fijo-discontinuo", "En prácticas"], correct: 1,
-                explanation: "Se considera fijo-discontinuo porque el trabajo se repite cada año pero no es continuo."
-            },
-
-            {
-                question: "La antigüedad en fijo-discontinuo cuenta:",
-                answers: ["Solo tiempo trabajado", "Toda la relación laboral", "No cuenta"], correct: 1,
-                explanation: "Se cuenta todo el periodo laboral, incluso inactivo, para antigüedad."
-            },
-
-            {
-                question: "La indemnización por despido en fijo-discontinuo cuenta:",
-                answers: ["Todo el tiempo incluido inactividad", "Solo tiempo trabajado", "No existe"], correct: 1,
-                explanation: "La indemnización solo se calcula por el tiempo efectivamente trabajado."
-            },
-
-            {
-                question: "El contrato por circunstancias imprevisibles dura máximo:",
-                answers: ["3 meses", "6 meses ampliable a 1 año", "2 años"], correct: 1,
-                explanation: "Se permite hasta 6 meses, ampliable a 1 año según convenio."
-            },
-
-            {
-                question: "El contrato por circunstancias previsibles puede usarse:",
-                answers: ["90 días al año", "180 días", "Todo el año"], correct: 0,
-                explanation: "Solo se permite 90 días por año para situaciones previsibles."
-            },
-
-            {
-                question: "La indemnización por contrato temporal es:",
-                answers: ["12 días por año", "20 días por año", "No hay"], correct: 0,
-                explanation: "Todos los contratos temporales dan derecho a indemnización de 12 días por año trabajado."
-            },
-
-            {
-                question: "El contrato por sustitución genera indemnización:",
-                answers: ["Sí", "No", "Depende del tiempo"], correct: 1,
-                explanation: "No se paga indemnización al finalizar un contrato por sustitución."
-            },
-
-            {
-                question: "El contrato por sustitución puede durar máximo:",
-                answers: ["6 meses", "3 meses salvo convenio", "1 año"], correct: 1,
-                explanation: "Duración máxima 3 meses salvo convenio colectivo."
-            },
-
-            {
-                question: "Se puede iniciar sustitución con antelación de:",
-                answers: ["15 días", "1 mes", "No se puede"], correct: 0,
-                explanation: "Se puede iniciar hasta 15 días antes de la ausencia de la persona sustituida."
-            },
-
-            {
-                question: "Encadenamiento: será fijo si trabaja 18 meses en 24 meses con:",
-                answers: ["1 contrato", "2 o más contratos temporales", "Cualquier contrato"], correct: 1,
-                explanation: "Si hay 2 o más contratos temporales en 24 meses y al menos 18 meses trabajados, se pasa a fijo."
-            },
-
-            {
-                question: "El contrato de relevo se firma con:",
-                answers: ["Trabajador fijo", "Desempleado o temporal", "Estudiante"], correct: 1,
-                explanation: "Se firma con un desempleado o trabajador temporal que completa jornada de un trabajador parcialmente jubilado."
-            },
-
-            {
-                question: "Indemnización contrato relevo:",
-                answers: ["12 días por año", "No hay", "20 días"], correct: 0,
-                explanation: "El contrato de relevo tiene derecho a 12 días por año trabajado."
-            },
-
-            {
-                question: "El contrato de formación en alternancia es para:",
-                answers: ["Personas sin titulación para prácticas", "Universitarios", "Jubilados"], correct: 0,
-                explanation: "Para personas jóvenes sin titulación, con tiempo de trabajo efectivo y formación."
-            },
-
-            {
-                question: "Duración formación en alternancia:",
-                answers: ["3 meses a 2 años", "6 meses a 1 año", "1 a 3 años"], correct: 0,
-                explanation: "Duración mínima 3 meses y máxima 2 años, salvo excepciones."
-            },
-
-            {
-                question: "Trabajo efectivo primer año alternancia:",
-                answers: ["50%", "65%", "85%"], correct: 1,
-                explanation: "Máximo 65% del primer año en trabajo efectivo, resto formación."
-            },
-
-            {
-                question: "Trabajo efectivo segundo año alternancia:",
-                answers: ["65%", "85%", "100%"], correct: 1,
-                explanation: "Máximo 85% del segundo año en trabajo efectivo, resto formación."
-            },
-
-            {
-                question: "Hay periodo de prueba en alternancia:",
-                answers: ["Sí", "No"], correct: 1,
-                explanation: "No hay periodo de prueba en contratos de alternancia."
-            },
-
-            {
-                question: "Contrato práctica profesional requiere:",
-                answers: ["Sin estudios", "Titulación oficial", "Experiencia mínima"], correct: 1,
-                explanation: "Se requiere titulación oficial para prácticas profesionales."
-            },
-
-            {
-                question: "Se puede firmar hasta:",
-                answers: ["3 años tras título", "10 años", "Sin límite"], correct: 0,
-                explanation: "Se puede firmar hasta 3 años después de obtener el título oficial."
-            },
-
-            {
-                question: "Duración práctica profesional:",
-                answers: ["6 meses a 1 año", "3 meses a 2 años", "1 a 3 años"], correct: 0,
-                explanation: "La duración mínima es de 6 meses y máxima de 1 año."
-            },
-
-            {
-                question: "Periodo de prueba práctica profesional:",
-                answers: ["Máximo 1 mes", "6 meses", "No existe"], correct: 0,
-                explanation: "Periodo de prueba máximo 1 mes salvo convenio."
-            },
-
-            {
-                question: "Contrato a tiempo parcial debe ser:",
-                answers: ["Verbal", "Siempre por escrito", "Opcional"], correct: 1,
-                explanation: "Debe realizarse siempre por escrito, indicando jornada y distribución."
-            },
-
-            {
-                question: "Horas complementarias pactadas máximo:",
-                answers: ["30%", "50%", "10%"], correct: 0,
-                explanation: "No pueden superar el 30% de horas de trabajo firmadas en el contrato."
-            },
-
-            {
-                question: "Trabajadores parciales tienen:",
-                answers: ["Menos derechos", "Mismos derechos", "No cotizan"], correct: 1,
-                explanation: "Tienen los mismos derechos que trabajadores a tiempo completo."
-            },
-
-            {
-                question: "En contrato alternancia se pueden hacer horas extras:",
-                answers: ["Sí siempre", "No salvo fuerza mayor", "Sí libremente"], correct: 1,
-                explanation: "No pueden realizar horas extras salvo por fuerza mayor."
-            },
-
-            {
-                question: "Alternancia permite trabajo nocturno:",
-                answers: ["Sí", "No"], correct: 1,
-                explanation: "No se permite trabajar en horario nocturno ni a turnos."
-            },
-
-            {
-                question: "Contrato prácticas da derecho a:",
-                answers: ["Certificación y desempleo", "Indemnización", "Nada"], correct: 0,
-                explanation: "Se obtiene certificación y cómputo para prestación por desempleo."
-            },
-
-            {
-                question: "Solo trabaja durante unos meses cada año:",
-                answers: ["Contrato indefinido ordinario", "Contrato fijo-discontinuo", "Contrato temporal imprevisible"], correct: 1,
-                explanation: "Este tipo de contratos se usan en trabajos estacionales o intermitentes."
-            },
-
-            {
-                question: "Se puede realizar el contrato de forma verbal:",
-                answers: ["Indefinido ordinario", "Contrato de sustitución", "Contrato fijo-discontinuo"], correct: 0,
-                explanation: "El contrato indefinido ordinario se puede hacer verbal o por escrito."
-            },
-
-            {
-                question: "Cuál NO es una situación válida para contrato por sustitución:",
-                answers: [
-                    "Sustituir a una persona con derecho a reserva de puesto",
-                    "Completar jornada reducida de otra persona",
-                    "Cubrir temporalmente un puesto en proceso de selección",
-                    "Sustituir a un trabajador que se ausenta unos días por emergencia familiar"
-                ], correct: 3,
-                explanation: "No se puede usar el contrato por sustitución para ausencias cortas por emergencia familiar."
-            },
-
-            {
-                question: "El contrato por circunstancias de la producción puede durar más de 6 meses:",
-                answers: ["Sí, si el convenio lo amplía hasta 1 año", "No, nunca", "Sí, hasta 2 años"], correct: 0,
-                explanation: "Puede durar hasta 1 año si el convenio colectivo lo permite."
-            },
-
-            {
-                question: "Cuál de estos contratos solo se puede realizar de forma escrita:",
-                answers: ["Indefinido ordinario", "Contrato por circunstancias de la producción", "Contrato por sustitución de persona trabajadora"], correct: 2,
-                explanation: "El contrato por sustitución siempre debe ser por escrito."
-            },
-
-            {
-                question: "Contrato que completa la jornada de un trabajador que se jubila parcialmente:",
-                answers: ["Contrato temporal común", "Contrato temporal de relevo", "Contrato de prácticas"], correct: 1,
-                explanation: "El contrato temporal de relevo cubre la jornada de un trabajador parcialmente jubilado."
-            },
-
-            {
-                question: "Duración mínima del contrato de formación en alternancia:",
-                answers: ["3 meses", "9 meses", "1 año", "2 años"], correct: 0,
-                explanation: "La duración mínima es de 3 meses."
-            },
-
-            {
-                question: "Horas complementarias máximas en contrato parcial:",
-                answers: [
-                    "30% de las horas firmadas",
-                    "10% de las horas firmadas",
-                    "15% de las horas firmadas",
-                    "45% de las horas firmadas"
-                ], correct: 0,
-                explanation: "Las horas complementarias no pueden superar el 30%."
-            },
-
-            {
-                question: "Situación: aumento de clientes en temporada que se repite cada año, tipo de contrato:",
-                answers: [
-                    "Circunstancias ocasionales e imprevisibles",
-                    "Circunstancias previsibles",
-                    "Sustitución"
-                ], correct: 1,
-                explanation: "Para aumentos predecibles se usa contrato por circunstancias previsibles."
-            },
-
-            {
-                question: "¿Tiene derecho a indemnización el contrato por sustitución?",
-                answers: ["Sí", "No"], correct: 1,
-                explanation: "No genera indemnización al finalizar."
-            }
+            { question: "El contrato indefinido ordinario puede celebrarse:", answers: ["Solo por escrito", "Verbal o escrito", "Solo verbal"], correct: 1, explanation: "El contrato indefinido ordinario puede celebrarse verbalmente o por escrito, sin requisitos especiales." },
+            { question: "El contrato fijo-discontinuo se usa cuando:", answers: ["La actividad es permanente todo el año", "La actividad es intermitente", "Es una sustitución"], correct: 1, explanation: "El contrato fijo-discontinuo es para trabajos intermitentes, como socorristas de verano o monitores de esquí." },
+            { question: "Un socorrista que trabaja todos los veranos tiene contrato:", answers: ["Temporal imprevisible", "Fijo-discontinuo", "En prácticas"], correct: 1, explanation: "Se considera fijo-discontinuo porque el trabajo se repite cada año pero no es continuo." },
+            { question: "La antigüedad en fijo-discontinuo cuenta:", answers: ["Solo tiempo trabajado", "Toda la relación laboral", "No cuenta"], correct: 1, explanation: "Se cuenta todo el periodo laboral, incluso inactivo, para antigüedad." },
+            { question: "La indemnización por despido en fijo-discontinuo cuenta:", answers: ["Todo el tiempo incluido inactividad", "Solo tiempo trabajado", "No existe"], correct: 1, explanation: "La indemnización solo se calcula por el tiempo efectivamente trabajado." },
+            { question: "El contrato por circunstancias imprevisibles dura máximo:", answers: ["3 meses", "6 meses ampliable a 1 año", "2 años"], correct: 1, explanation: "Se permite hasta 6 meses, ampliable a 1 año según convenio." },
+            { question: "El contrato por circunstancias previsibles puede usarse:", answers: ["90 días al año", "180 días", "Todo el año"], correct: 0, explanation: "Solo se permite 90 días por año para situaciones previsibles." },
+            { question: "La indemnización por contrato temporal es:", answers: ["12 días por año", "20 días por año", "No hay"], correct: 0, explanation: "Todos los contratos temporales dan derecho a indemnización de 12 días por año trabajado." },
+            { question: "El contrato por sustitución genera indemnización:", answers: ["Sí", "No", "Depende del tiempo"], correct: 1, explanation: "No se paga indemnización al finalizar un contrato por sustitución." },
+            { question: "El contrato por sustitución puede durar máximo:", answers: ["6 meses", "3 meses salvo convenio", "1 año"], correct: 1, explanation: "Duración máxima 3 meses salvo convenio colectivo." },
+            { question: "Se puede iniciar sustitución con antelación de:", answers: ["15 días", "1 mes", "No se puede"], correct: 0, explanation: "Se puede iniciar hasta 15 días antes de la ausencia de la persona sustituida." },
+            { question: "Encadenamiento: será fijo si trabaja 18 meses en 24 meses con:", answers: ["1 contrato", "2 o más contratos temporales", "Cualquier contrato"], correct: 1, explanation: "Si hay 2 o más contratos temporales en 24 meses y al menos 18 meses trabajados, se pasa a fijo." },
+            { question: "El contrato de relevo se firma con:", answers: ["Trabajador fijo", "Desempleado o temporal", "Estudiante"], correct: 1, explanation: "Se firma con un desempleado o trabajador temporal que completa jornada de un trabajador parcialmente jubilado." },
+            { question: "Indemnización contrato relevo:", answers: ["12 días por año", "No hay", "20 días"], correct: 0, explanation: "El contrato de relevo tiene derecho a 12 días por año trabajado." },
+            { question: "El contrato de formación en alternancia es para:", answers: ["Personas sin titulación para prácticas", "Universitarios", "Jubilados"], correct: 0, explanation: "Para personas jóvenes sin titulación, con tiempo de trabajo efectivo y formación." },
+            { question: "Duración formación en alternancia:", answers: ["3 meses a 2 años", "6 meses a 1 año", "1 a 3 años"], correct: 0, explanation: "Duración mínima 3 meses y máxima 2 años, salvo excepciones." },
+            { question: "Trabajo efectivo primer año alternancia:", answers: ["50%", "65%", "85%"], correct: 1, explanation: "Máximo 65% del primer año en trabajo efectivo, resto formación." },
+            { question: "Trabajo efectivo segundo año alternancia:", answers: ["65%", "85%", "100%"], correct: 1, explanation: "Máximo 85% del segundo año en trabajo efectivo, resto formación." },
+            { question: "Hay periodo de prueba en alternancia:", answers: ["Sí", "No"], correct: 1, explanation: "No hay periodo de prueba en contratos de alternancia." },
+            { question: "Contrato práctica profesional requiere:", answers: ["Sin estudios", "Titulación oficial", "Experiencia mínima"], correct: 1, explanation: "Se requiere titulación oficial para prácticas profesionales." },
+            { question: "Se puede firmar hasta:", answers: ["3 años tras título", "10 años", "Sin límite"], correct: 0, explanation: "Se puede firmar hasta 3 años después de obtener el título oficial." },
+            { question: "Duración práctica profesional:", answers: ["6 meses a 1 año", "3 meses a 2 años", "1 a 3 años"], correct: 0, explanation: "La duración mínima es de 6 meses y máxima de 1 año." },
+            { question: "Periodo de prueba práctica profesional:", answers: ["Máximo 1 mes", "6 meses", "No existe"], correct: 0, explanation: "Periodo de prueba máximo 1 mes salvo convenio." },
+            { question: "Contrato a tiempo parcial debe ser:", answers: ["Verbal", "Siempre por escrito", "Opcional"], correct: 1, explanation: "Debe realizarse siempre por escrito, indicando jornada y distribución." },
+            { question: "Horas complementarias pactadas máximo:", answers: ["30%", "50%", "10%"], correct: 0, explanation: "No pueden superar el 30% de horas de trabajo firmadas en el contrato." },
+            { question: "Trabajadores parciales tienen:", answers: ["Menos derechos", "Mismos derechos", "No cotizan"], correct: 1, explanation: "Tienen los mismos derechos que trabajadores a tiempo completo." },
+            { question: "En contrato alternancia se pueden hacer horas extras:", answers: ["Sí siempre", "No salvo fuerza mayor", "Sí libremente"], correct: 1, explanation: "No pueden realizar horas extras salvo por fuerza mayor." },
+            { question: "Alternancia permite trabajo nocturno:", answers: ["Sí", "No"], correct: 1, explanation: "No se permite trabajar en horario nocturno ni a turnos." },
+            { question: "Contrato prácticas da derecho a:", answers: ["Certificación y desempleo", "Indemnización", "Nada"], correct: 0, explanation: "Se obtiene certificación y cómputo para prestación por desempleo." },
+            { question: "Solo trabaja durante unos meses cada año:", answers: ["Contrato indefinido ordinario", "Contrato fijo-discontinuo", "Contrato temporal imprevisible"], correct: 1, explanation: "Este tipo de contratos se usan en trabajos estacionales o intermitentes." },
+            { question: "Se puede realizar el contrato de forma verbal:", answers: ["Indefinido ordinario", "Contrato de sustitución", "Contrato fijo-discontinuo"], correct: 0, explanation: "El contrato indefinido ordinario se puede hacer verbal o por escrito." },
+            { question: "Cuál NO es una situación válida para contrato por sustitución:", answers: ["Sustituir a una persona con derecho a reserva de puesto", "Completar jornada reducida de otra persona", "Cubrir temporalmente un puesto en proceso de selección", "Sustituir a un trabajador que se ausenta unos días por emergencia familiar"], correct: 3, explanation: "No se puede usar el contrato por sustitución para ausencias cortas por emergencia familiar." },
+            { question: "El contrato por circunstancias de la producción puede durar más de 6 meses:", answers: ["Sí, si el convenio lo amplía hasta 1 año", "No, nunca", "Sí, hasta 2 años"], correct: 0, explanation: "Puede durar hasta 1 año si el convenio colectivo lo permite." },
+            { question: "Cuál de estos contratos solo se puede realizar de forma escrita:", answers: ["Indefinido ordinario", "Contrato por circunstancias de la producción", "Contrato por sustitución de persona trabajadora"], correct: 2, explanation: "El contrato por sustitución siempre debe ser por escrito." },
+            { question: "Contrato que completa la jornada de un trabajador que se jubila parcialmente:", answers: ["Contrato temporal común", "Contrato temporal de relevo", "Contrato de prácticas"], correct: 1, explanation: "El contrato temporal de relevo cubre la jornada de un trabajador parcialmente jubilado." },
+            { question: "Duración mínima del contrato de formación en alternancia:", answers: ["3 meses", "9 meses", "1 año", "2 años"], correct: 0, explanation: "La duración mínima es de 3 meses." },
+            { question: "Horas complementarias máximas en contrato parcial:", answers: ["30% de las horas firmadas", "10% de las horas firmadas", "15% de las horas firmadas", "45% de las horas firmadas"], correct: 0, explanation: "Las horas complementarias no pueden superar el 30%." },
+            { question: "Situación: aumento de clientes en temporada que se repite cada año, tipo de contrato:", answers: ["Circunstancias ocasionales e imprevisibles", "Circunstancias previsibles", "Sustitución"], correct: 1, explanation: "Para aumentos predecibles se usa contrato por circunstancias previsibles." },
+            { question: "¿Tiene derecho a indemnización el contrato por sustitución?", answers: ["Sí", "No"], correct: 1, explanation: "No genera indemnización al finalizar." }
         ];
 
-        // Mezclar preguntas al inicio
         questions = shuffle(questions);
-
         let currentQuestion = 0;
         let score = 0;
         let answersUser = [];
@@ -417,7 +217,6 @@
             const answersDiv = document.getElementById("answers");
             answersDiv.innerHTML = "";
 
-            // Mezclar respuestas
             let answers = shuffle([...q.answers]);
 
             answers.forEach((answer) => {
@@ -462,7 +261,15 @@
             resultDiv.innerHTML = summaryHtml;
         }
 
-        // --- INICIO ---
+        function restartGame() {
+            currentQuestion = 0;
+            score = 0;
+            answersUser = [];
+            questions = shuffle(questions);
+            document.getElementById("result").innerHTML = "";
+            loadQuestion();
+        }
+
         loadQuestion();
     </script>
 
