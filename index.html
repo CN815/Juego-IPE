@@ -116,34 +116,48 @@ button:hover {
 <script>
 function shuffle(array){ return array.sort(()=>Math.random()-0.5); }
 
-// ✅ RONDAS AMPLIADAS
+// ✅ RONDAS COMPLETAS (~30)
 let roundsData = [
     {words:["No tienen fecha fin","Pueden tener bonificaciones","Requieren causa temporal","Pueden celebrarse con cualquier trabajador"],impostor:"Requieren causa temporal",hint:"Los indefinidos no necesitan justificar temporalidad",explanation:"Los contratos indefinidos no requieren causa temporal ni fecha de finalización."},
     {words:["Contrato verbal","Contrato escrito","Contrato fijo-discontinuo","Contrato indefinido ordinario"],impostor:"Contrato verbal",hint:"Algunos requieren forma escrita",explanation:"El fijo-discontinuo y la mayoría de contratos indefinidos se hacen por escrito."},
     {words:["Actividad intermitente","Periodos sin trabajar","Siempre se trabaja todo el año","Trabajo estacional"],impostor:"Siempre se trabaja todo el año",hint:"Hay meses sin actividad",explanation:"El fijo-discontinuo tiene periodos de actividad e inactividad."},
+    {words:["Restaurante verano","Temporada agrícola","Montaje escenarios","Trabajo continuo todo el año"],impostor:"Trabajo continuo todo el año",hint:"Fijo-discontinuo no trabaja todo el año",explanation:"El fijo-discontinuo se usa solo durante ciertos meses por aumento de actividad."},
+    {words:["Contrato por circunstancias imprevisibles","Contrato por circunstancias previsibles","Contrato fijo-discontinuo","Contrato indefinido"],impostor:"Contrato fijo-discontinuo",hint:"Busca temporalidad",explanation:"Este contrato es indefinido pero no continuo, usado en periodos intermitentes."},
     {words:["Tienen fecha fin","Exigen causa concreta","No necesitan justificar duración","Duración determinada"],impostor:"No necesitan justificar duración",hint:"Deben justificar temporalidad",explanation:"Los contratos temporales necesitan causa clara y concreta."},
-    {words:["Indemnización 12 días","Sin indemnización","Duración determinada","Causa concreta"],impostor:"Sin indemnización",hint:"Los temporales sí generan indemnización",explanation:"Los contratos temporales generan 12 días por año trabajado."},
+    {words:["Indemnización 12 días","Sin indemnización","Duración determinada","Causa concreta"],impostor:"Sin indemnización",hint:"Este contrato sí genera indemnización",explanation:"El contrato por sustitución no genera indemnización al finalizar."},
     {words:["Reserva puesto trabajo","Incapacidad temporal","Maternidad","Indemnización final"],impostor:"Indemnización final",hint:"Este contrato no genera indemnización",explanation:"El contrato por sustitución no genera indemnización al finalizar."},
     {words:["Jubilación parcial","Trabajador desempleado","Contrato verbal","Indemnización 12 días"],impostor:"Contrato verbal",hint:"Debe formalizarse por escrito",explanation:"El contrato de relevo debe realizarse siempre por escrito."},
     {words:["Sin titulación","65% primer año","85% segundo año","Periodo prueba obligatorio"],impostor:"Periodo prueba obligatorio",hint:"No existe periodo prueba",explanation:"En alternancia no existe periodo de prueba."},
     {words:["Requiere titulación","6 meses mínimo","1 año máximo","Sin límite duración"],impostor:"Sin límite duración",hint:"Tiene duración concreta",explanation:"La duración mínima es 6 meses y máxima 1 año."},
     {words:["Siempre por escrito","Horas inferiores jornada completa","Puede horas complementarias","Puede horas extra libres"],impostor:"Puede horas extra libres",hint:"Solo fuerza mayor",explanation:"No pueden realizar horas extras salvo fuerza mayor."},
     {words:["Trabajo parcial","Horas complementarias max 30%","Horas extra libre","Salario proporcional"],impostor:"Horas extra libre",hint:"Sólo fuerza mayor",explanation:"Los trabajadores parciales no pueden hacer horas extras salvo fuerza mayor."},
-    {words:["Prácticas universitarias","Formación alternancia","Contrato temporal","Contrato indefinido"],impostor:"Contrato temporal",hint:"Busca el contrato formativo o indefinido",explanation:"El contrato temporal tiene fecha fin y causa concreta."}
+    {words:["Prácticas universitarias","Formación alternancia","Contrato temporal","Contrato indefinido"],impostor:"Contrato temporal",hint:"Busca el contrato formativo o indefinido",explanation:"El contrato temporal tiene fecha fin y causa concreta."},
+    {words:["Duración mínima 3 meses","Duración máxima 2 años","Salario pactado","Sin límite duración"],impostor:"Sin límite duración",hint:"Contratos formativos tienen límite",explanation:"Formación alternancia dura entre 3 meses y 2 años."},
+    {words:["65% primer año","85% segundo año","Tiempo completo","Periodo prueba obligatorio"],impostor:"Periodo prueba obligatorio",hint:"No existe periodo prueba",explanation:"En alternancia no hay periodo de prueba."},
+    {words:["Horas complementarias","Horas extra libres","Jornada proporcional","Salario mínimo"],impostor:"Horas extra libres",hint:"Solo fuerza mayor",explanation:"No pueden realizar horas extras salvo fuerza mayor."},
+    {words:["Indemnización al final","Certificación y desempleo","Sin beneficios","Prácticas obligatorias"],impostor:"Sin beneficios",hint:"Los contratos formativos sí generan certificación",explanation:"No hay indemnización, pero sí computa para desempleo y certificación."},
+    {words:["Contrato de relevo","Contrato por sustitución","Contrato temporal común","Contrato indefinido ordinario"],impostor:"Contrato temporal común",hint:"Busca contrato especial",explanation:"El contrato temporal común no tiene requisitos especiales como el relevo o sustitución."},
+    {words:["Encadenamiento 2 contratos","Encadenamiento 1 contrato","Contrato formativo","Contrato de relevo"],impostor:"Encadenamiento 1 contrato",hint:"Se requiere 2 contratos para pasar a fijo",explanation:"Para encadenamiento se necesitan 2 o más contratos temporales."},
+    {words:["Certificación práctica","Periodo prueba 1 mes","Duración 6-12 meses","Titulación requerida"],impostor:"Periodo prueba 1 mes",hint:"No hay periodo prueba",explanation:"El contrato de prácticas no tiene periodo de prueba salvo convenio."},
+    {words:["Duración máxima 1 año","Duración mínima 6 meses","Titulación requerida","Sin límite"],impostor:"Sin límite",hint:"Tiene duración concreta",explanation:"El contrato de prácticas tiene duración mínima y máxima según normativa."},
+    {words:["Horas complementarias 30%","Horas extra solo fuerza mayor","Jornada proporcional","Salario mínimo"],impostor:"Horas extra solo fuerza mayor",hint:"Solo fuerza mayor",explanation:"Horas extra no pueden realizarse libremente, solo por fuerza mayor."},
+    {words:["Contrato temporal por sustitución","Contrato temporal por producción","Contrato formativo","Contrato indefinido"],impostor:"Contrato formativo",hint:"Busca temporalidad o indefinido",explanation:"Formativos son específicos para prácticas o alternancia."},
+    {words:["Indefinido ordinario","Fijo-discontinuo","Temporal por circunstancias previsibles","Temporal por circunstancias imprevisibles"],impostor:"Temporal por circunstancias imprevisibles",hint:"Busca contratos formativos o indefinidos",explanation:"Temporal imprevisible tiene causa específica."},
+    {words:["Contrato parcial","Contrato a tiempo completo","Horas complementarias","Horas extra libres"],impostor:"Horas extra libres",hint:"Solo fuerza mayor",explanation:"Los contratos parciales no pueden hacer horas extra salvo fuerza mayor."},
+    {words:["Duración 3 meses mínimo","Duración 2 años máximo","Salario según convenio","No hay indemnización"],impostor:"No hay indemnización",hint:"La certificación sí existe",explanation:"Los contratos formativos no generan indemnización."},
+    {words:["Trabajador sin titulación","Trabajador con titulación","Contrato temporal","Contrato relevo"],impostor:"Contrato temporal",hint:"Busca contrato formativo o relevo",explanation:"Temporal tiene causa temporal y fecha fin, formativo o relevo no."}
 ];
 
 let currentQuestion = 0, score = 0, answered = false, hintUsed = false;
 
 function loadQuestion(){
-    if(currentQuestion >= roundsData.length){
-        showResults(); return;
-    }
+    if(currentQuestion >= roundsData.length){ showResults(); return; }
     answered = false; hintUsed = false;
     document.getElementById("result").innerHTML = "";
     document.getElementById("nextBtn").style.display="none";
 
     const q = roundsData[currentQuestion];
-    document.getElementById("question").innerHTML = "Ronda " + (currentQuestion+1) + " de " + roundsData.length + "<br><br>" + "Selecciona la palabra impostora:";
+    document.getElementById("question").innerHTML = "Ronda " + (currentQuestion+1) + " de " + roundsData.length + "<br><br>Selecciona la palabra impostora:";
 
     const answersDiv = document.getElementById("answers");
     answersDiv.innerHTML = "";
